@@ -1,11 +1,11 @@
 import { ESLint } from "eslint";
-import plugin from "../src/index.js";
-import assert from "assert";
-import { js } from "./rule-tester.js";
 import { LegacyESLint } from "eslint/use-at-your-own-risk";
+import { js } from "./rule-tester.js";
+import assert from "assert";
+import plugin from "../src/index.js";
 
 describe("recommended config", () => {
-  const code = js`
+  const codeThatDerivesState = js`
     import { useState, useEffect } from "react";
 
     const MyComponent = () => {
@@ -23,7 +23,7 @@ describe("recommended config", () => {
       // Use `overrideConfig` and `overrideConfigFile: true` to ignore the project's config
       overrideConfigFile: true,
       overrideConfig: [plugin.configs.recommended],
-    }).lintText(code);
+    }).lintText(codeThatDerivesState);
 
     assert.ok(
       results[0].messages
@@ -44,7 +44,7 @@ describe("recommended config", () => {
           sourceType: "module",
         },
       },
-    }).lintText(code);
+    }).lintText(codeThatDerivesState);
 
     assert.ok(
       results[0].messages
@@ -65,7 +65,7 @@ describe("recommended config", () => {
       ],
     });
 
-    const results = await eslint.lintText(code);
+    const results = await eslint.lintText(codeThatDerivesState);
     const ruleIds = results[0].messages.map((m) => m.ruleId);
     assert.ok(
       !ruleIds.includes("react-you-might-not-need-an-effect/no-derived-state"),
